@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { ArrowRight, Coins, Package2, ShieldCheck, Store, Users } from "lucide-react";
 import { AppLogo } from "@/components/AppLogo";
 import { MiniPayDemo } from "@/components/MiniPayDemo";
@@ -11,7 +12,7 @@ const highlights = [
   },
   {
     title: "MiniPay checkout",
-    description: "MiniPay detection and wallet access wired with viem.",
+    description: "A reusable MiniPay hook and wallet access wired with viem.",
     icon: Coins,
   },
   {
@@ -60,12 +61,24 @@ export default function Home() {
               <div className="inline-flex rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-sm text-zinc-300">
                 Public showcase
               </div>
+              <div className="mt-3">
+                <Link
+                  href="https://talent.app/~/earn/celo-proof-of-ship"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 px-4 py-2 text-sm text-zinc-300 transition hover:border-white/15 hover:text-white"
+                >
+                  Celo Proof of Ship
+                  <ArrowRight className="size-4" />
+                </Link>
+              </div>
               <h1 className="mt-6 max-w-3xl text-5xl font-medium tracking-[-0.065em] text-white md:text-7xl">
                 How&apos;s U for MiniPay checkout and modern storefront selling.
               </h1>
               <p className="mt-6 max-w-2xl text-lg leading-8 text-zinc-400">
                 This open-source shell shows the storefront direction, payment entry points,
-                and MiniPay wallet touchpoints behind How&apos;s U.
+                and MiniPay wallet touchpoints behind How&apos;s U, including the Proof of Ship
+                compatibility hook.
               </p>
 
               <div className="mt-8 grid gap-3 sm:grid-cols-3">

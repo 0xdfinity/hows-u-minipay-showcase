@@ -1,44 +1,38 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
 import Image from "next/image";
-import { CheckCircle2, Copy, Smartphone, Wallet } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, CheckCircle2, Copy, Smartphone, Wallet } from "lucide-react";
 import { toast } from "sonner";
-import {
-  getMiniPayAddresses,
-  getMiniPayWalletClient,
-  isMiniPay,
-  shortenAddress,
-} from "@/lib/minipay";
+import { useMiniPay } from "@/hooks/useMiniPay";
+import { shortenAddress } from "@/lib/minipay";
 
 const demoItems = [
   { name: "Store setup", value: "Ready" },
-  { name: "MiniPay state", value: "Detected automatically" },
-  { name: "Backend hooks", value: "Not included here" },
+  { name: "MiniPay hook", value: "useMiniPay" },
+  { name: "Wallet flow", value: "MiniPay + viem" },
 ];
 
 export function MiniPayDemo() {
-  const [insideMiniPay] = useState(() => isMiniPay());
-  const [address, setAddress] = useState<string | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [copied, setCopied] = useState(false);
+  const { address, connect, hasProvider, insideMiniPay, isPending } = useMiniPay();
 
   const handleMiniPayAction = () => {
-    startTransition(async () => {
-      if (!insideMiniPay) {
-        toast.message("Open this page inside MiniPay to test the wallet flow.");
-        return;
-      }
+    if (!insideMiniPay) {
+      toast.message("Open this page inside MiniPay to test the wallet flow.");
+      return;
+    }
 
+    void (async () => {
       try {
-        const [walletAddress] = await getMiniPayAddresses();
-        await getMiniPayWalletClient();
-        setAddress(walletAddress);
+        await connect();
         toast.success("MiniPay wallet detected.");
       } catch (error) {
         const message = error instanceof Error ? error.message : "MiniPay did not respond.";
         toast.error(message);
       }
-    });
+    })();
   };
 
   const handleCopy = async () => {
@@ -48,7 +42,9 @@ export function MiniPayDemo() {
 
     try {
       await navigator.clipboard.writeText(address);
+      setCopied(true);
       toast.success("Wallet address copied.");
+      window.setTimeout(() => setCopied(false), 1600);
     } catch {
       toast.error("Could not copy the wallet address.");
     }
@@ -75,6 +71,21 @@ export function MiniPayDemo() {
             className="h-10 w-10"
           />
         </span>
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3 text-sm text-zinc-400">
+        <span className="rounded-full border border-white/8 bg-white/[0.04] px-3 py-1.5">
+          {insideMiniPay ? "Inside MiniPay" : hasProvider ? "Wallet provider found" : "Open in MiniPay"}
+        </span>
+        <Link
+          href="https://talent.app/~/earn/celo-proof-of-ship"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1 rounded-full border border-white/8 px-3 py-1.5 text-zinc-300 transition hover:border-white/15 hover:text-white"
+        >
+          Celo Proof of Ship
+          <ArrowUpRight className="size-3.5" />
+        </Link>
       </div>
 
       <div className="mt-6 rounded-[1.7rem] border border-white/8 bg-black/25 p-5">
@@ -121,7 +132,7 @@ export function MiniPayDemo() {
                 className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-2 text-sm text-zinc-200 transition hover:bg-white/[0.04]"
               >
                 <Copy className="size-4" />
-                Copy
+                {copied ? "Copied" : "Copy"}
               </button>
             </div>
           </div>
