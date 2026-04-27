@@ -12,6 +12,10 @@ const instrumentSans = Instrument_Sans({
 export const metadata: Metadata = {
   title: "How's U MiniPay Showcase",
   description: "Public showcase for the How's U storefront shell and MiniPay checkout experience.",
+  other: {
+    "talentapp:project_verification":
+      "3d7c3074b0d0ad3ee41e19d845785335d4a97e6d0364288a8f391397a35d3be77f50ec97f51c48f21a8ff5e49e9eea5163d9a21b6d42b0876c201e48bfca8ee5",
+  },
 };
 
 export default function RootLayout({
